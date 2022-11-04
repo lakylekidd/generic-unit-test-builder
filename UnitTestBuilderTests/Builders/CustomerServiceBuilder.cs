@@ -8,11 +8,11 @@ namespace UnitTestBuilderTests.Builders
     public class CustomerServiceBuilder : BaseBuilder<CustomerService, CustomerDto, Customer, ICustomerRepository>
     {
         public Mock<ICommunicationService> CommunicationsServiceMock { get; } = new();
-        public Mock<IIdentityGenerator> IdentityGeneratorMock { get; } = new ();
+       
 
         
         public ICommunicationService CommunicationsService => CommunicationsServiceMock.Object;
-        public IIdentityGenerator IdentityGenerator => IdentityGeneratorMock.Object;
+       
         
         public override CustomerServiceBuilder Build()
         {
@@ -29,18 +29,6 @@ namespace UnitTestBuilderTests.Builders
                 return customer;
             }).ToList();
             RepositoryMock.Setup(x => x.GetAsync()).ReturnsAsync(customers);
-            return this;
-        }
-
-        public CustomerServiceBuilder WithId(int id = 1)
-        {
-            IdentityGeneratorMock.Setup(x => x.Generate()).Returns(id);
-            return this;
-        }
-
-        public CustomerServiceBuilder WithIdGeneratorFailure(Exception e = default)
-        {
-            IdentityGeneratorMock.Setup(x => x.Generate()).Throws(e);
             return this;
         }
 

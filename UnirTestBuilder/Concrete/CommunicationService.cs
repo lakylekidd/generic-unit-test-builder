@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using UnitTestBuilder.Core;
+using UnitTestBuilder.Mappers;
 using UnitTestBuilder.Models;
 
 namespace UnitTestBuilder.Concrete
@@ -10,8 +11,9 @@ namespace UnitTestBuilder.Concrete
 
         public CommunicationService(
             IMessagingService messagingService,
+            IIdentityGenerator identityGenerator,
             ICommunicationRepository repository) 
-            : base(repository)
+            : base(identityGenerator, repository)
         {
             _messagingService = messagingService;
         }
@@ -20,7 +22,11 @@ namespace UnitTestBuilder.Concrete
         {
             ArgumentNullException.ThrowIfNull(message);
             var msgJson = JsonSerializer.Serialize(message);
-            return await _messagingService.SendAsync(msgJson);
+            var result = await _messagingService.SendAsync(msgJson);
+            var id = IdentityGenerator.Generate();
+
+            if (result) await Repository.CreateAsync(message.ToAggregate(id));
+            return result;
         }
     }
 }

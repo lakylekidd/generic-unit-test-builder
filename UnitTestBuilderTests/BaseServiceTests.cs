@@ -31,12 +31,12 @@ namespace UnitTestBuilderTests
         public async Task GetAsync_should_return_correctly_mapped_customer()
         {
             var service = Builder
-                .WithAggregate(out var expectedCustomer)
+                .WithAggregate(out var expected)
                 .Build().Create();
 
-            var resultingCustomer = await service.GetAsync(1);
+            var resulting = await service.GetAsync(1);
 
-            CompareResultingCustomerAndVerifyMappings(expectedCustomer, resultingCustomer);
+            CompareResultingCustomerAndVerifyMappings(expected, resulting);
         }
 
         protected abstract void CompareResultingCustomerAndVerifyMappings(TAggregate expected, TDto resulted);

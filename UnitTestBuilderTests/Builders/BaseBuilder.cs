@@ -11,8 +11,11 @@ namespace UnitTestBuilderTests.Builders
     {
         protected object[] Services = { };
 
+        public Mock<IIdentityGenerator> IdentityGeneratorMock { get; } = new();
         public Mock<TRepository> RepositoryMock { get; } = new();
+
         public TRepository Repository => RepositoryMock.Object;
+        public IIdentityGenerator IdentityGenerator => IdentityGeneratorMock.Object;
 
         public TService Create()
         {
@@ -24,6 +27,18 @@ namespace UnitTestBuilderTests.Builders
         {
             aggregate = GenerateAggregate(withId);
             RepositoryMock.Setup(x => x.GetAsync(withId)).ReturnsAsync(aggregate);
+            return this;
+        }
+
+        public BaseBuilder<TService, TDto, TAggregate, TRepository> WithIdGeneratorFailure(Exception e = default)
+        {
+            IdentityGeneratorMock.Setup(x => x.Generate()).Throws(e);
+            return this;
+        }
+
+        public BaseBuilder<TService, TDto, TAggregate, TRepository> WithId(int id = 1)
+        {
+            IdentityGeneratorMock.Setup(x => x.Generate()).Returns(id);
             return this;
         }
 

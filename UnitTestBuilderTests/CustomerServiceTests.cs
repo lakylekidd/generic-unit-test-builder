@@ -49,8 +49,8 @@ namespace UnitTestBuilderTests
         public async Task CreateAsync_should_create_successfully()
         {
             var service = Builder
-                .WithId()
                 .WithCreateModel(out var model, firstName: "Tester")
+                .WithId()
                 .Build().Create();
 
             var resultingAggregate = await service.CreateAsync(model);

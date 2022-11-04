@@ -8,10 +8,12 @@ namespace UnitTestBuilder.Concrete
         where TAggregate : class, IAggregate
         where TDto : BaseDto
     {
+        protected readonly IIdentityGenerator IdentityGenerator;
         protected readonly IRepository<TAggregate> Repository;
 
-        protected ServiceBase(IRepository<TAggregate> repository)
+        protected ServiceBase(IIdentityGenerator identityGenerator, IRepository<TAggregate> repository)
         {
+            IdentityGenerator = identityGenerator;
             Repository = repository;
         }
 

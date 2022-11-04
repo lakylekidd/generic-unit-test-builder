@@ -7,23 +7,21 @@ namespace UnitTestBuilder.Concrete
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly ICommunicationService _communicationService;
-        private readonly IIdentityGenerator _identityGenerator;
 
         public CustomerService(
             ICustomerRepository customerRepository, 
             ICommunicationService communicationService, 
             IIdentityGenerator identityGenerator)
-            : base(customerRepository)
+            : base(identityGenerator, customerRepository)
         {
             _customerRepository = customerRepository;
             _communicationService = communicationService;
-            _identityGenerator = identityGenerator;
         }
 
         public async Task<Customer> CreateAsync(CustomerCreateModel model)
         {
             ArgumentNullException.ThrowIfNull(model);
-            var id = _identityGenerator.Generate();
+            var id = IdentityGenerator.Generate();
             var aggregate = model.ToAggregate(id);
             await _customerRepository.CreateAsync(aggregate);
             return aggregate;
